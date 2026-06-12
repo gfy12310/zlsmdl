@@ -118,14 +118,11 @@
     
     <!-- 视频选择器 -->
     <div class="flex flex-wrap gap-3 mb-6 justify-center">
-      <button id="video1" class="video-selector bg-white text-dark px-5 py-2 rounded-full text-sm md:text-base btn-hover shadow flex items-center">
-        <i class="fa fa-play-circle mr-2"></i>视频4: 列祖时期
+      <button id="video1" class="video-selector bg-primary text-white px-5 py-2 rounded-full text-sm md:text-base btn-hover flex items-center">
+        <i class="fa fa-play-circle mr-2"></i>视频289:御钱之道（上）
       </button>
       <button id="video2" class="video-selector bg-white text-dark px-5 py-2 rounded-full text-sm md:text-base btn-hover shadow flex items-center">
-        <i class="fa fa-play-circle mr-2"></i>视频2: SJ的年代
-      </button>
-      <button id="video3" class="video-selector bg-white text-dark px-5 py-2 rounded-full text-sm md:text-base btn-hover shadow flex items-center">
-        <i class="fa fa-play-circle mr-2"></i>视频3: 上古时期
+        <i class="fa fa-play-circle mr-2"></i>视频290：御钱之道(下)
       </button>
     </div>
     
@@ -139,7 +136,7 @@
       <!-- 视频容器 -->
       <div class="video-container bg-black">
         <video id="videoPlayer" class="w-full h-full" poster="https://picsum.photos/1280/720?grayscale&amp;blur=2" preload="metadata">
-          <source src="http://t7eyexetl.hn-bkt.clouddn.com/bible04.mp4" type="video/mp4">
+          <source src="http://tgixn1iiv.hn-bkt.clouddn.com/289.mp4" type="video/mp4">
           您的浏览器不支持HTML5视频播放
         </video>
       </div>
@@ -206,13 +203,11 @@
     const loader = document.getElementById('loader');
     const video1Btn = document.getElementById('video1');
     const video2Btn = document.getElementById('video2');
-    const video3Btn = document.getElementById('video3');
     
     // 视频源
     const videoSources = {
-      video1: 'http://t7eyexetl.hn-bkt.clouddn.com/bible04.mp4',
-      video2: 'http://t7eyexetl.hn-bkt.clouddn.com/bible02.mp4',
-      video3: 'http://t7eyexetl.hn-bkt.clouddn.com/bible03.mp4'
+      video1: 'http://tgixn1iiv.hn-bkt.clouddn.com/289.mp4',
+      video2: 'http://tgixn1iiv.hn-bkt.clouddn.com/290.mp4'
     };
     
     // 播放/暂停功能
@@ -243,19 +238,7 @@
         muteBtn.innerHTML = '<i class="fa fa-volume-off text-xl"></i>';
       } else if (videoPlayer.volume === 0) {
         muteBtn.innerHTML = '<i class="fa fa-volume-down text-xl"></i>';
-      } else {
-        muteBtn.innerHTML = '<i class="fa fa-volume-up text-xl"></i>';
-      }
-    }
-    
-    // 音量调节
-    function setVolume() {
-      videoPlayer.volume = volumeBar.value;
-      if (videoPlayer.volume > 0 && videoPlayer.muted) {
-        videoPlayer.muted = false;
-      }
-      updateMuteButton();
-    }
+             }
     
     // 更新进度条
     function updateProgress() {
@@ -328,7 +311,6 @@
       // 更新按钮样式
       video1Btn.className = 'video-selector bg-white text-dark px-5 py-2 rounded-full text-sm md:text-base btn-hover shadow flex items-center';
       video2Btn.className = 'video-selector bg-white text-dark px-5 py-2 rounded-full text-sm md:text-base btn-hover shadow flex items-center';
-      video3Btn.className = 'video-selector bg-white text-dark px-5 py-2 rounded-full text-sm md:text-base btn-hover shadow flex items-center';
       document.getElementById(sourceId).className = 'video-selector bg-primary text-white px-5 py-2 rounded-full text-sm md:text-base btn-hover flex items-center';
       
       // 更改视频源
@@ -390,7 +372,7 @@
     videoPlayer.addEventListener('click', handleVideoClick);
     video1Btn.addEventListener('click', () => changeVideoSource('video1'));
     video2Btn.addEventListener('click', () => changeVideoSource('video2'));
-    video3Btn.addEventListener('click', () => changeVideoSource('video3'));
+    
     // 视频可播放时隐藏加载指示器
     videoPlayer.addEventListener('canplay', () => {
       loader.classList.add('hidden');
