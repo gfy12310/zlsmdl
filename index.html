@@ -7,8 +7,7 @@
   <!-- 引入Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   
-  <!-- 允许加载 HTTP 媒体资源、放行混合内容 -->
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests 'none'; media-src http: *; default-src * data: 'unsafe-inline' 'unsafe-eval';">
+
   
   <!-- 配置Tailwind自定义颜色和字体 -->
   <script>
@@ -388,14 +387,6 @@
     videoPlayer.addEventListener('loadstart', () => {
       loader.classList.remove('hidden');
     });
-
-	  // 兜底：一旦被转为HTTPS，立刻切回HTTP
-	videoPlayer.addEventListener('loadstart', function(){
-	  let curSrc = this.src;
-	  if(curSrc.toLowerCase().startsWith('https://')){
-	    this.src = curSrc.replace('https://', 'http://');
-	  }
-	});
     
     // 触摸设备上显示控制栏
     videoPlayer.addEventListener('touchstart', () => {
