@@ -1,6 +1,9 @@
-<html lang="zh-CN"><head>
+<html lang="zh-CN">
+<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 核心规则：关闭HTTP自动转HTTPS + 允许HTTP视频资源 -->
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests 'none'; media-src http: *; default-src * data: 'unsafe-inline' 'unsafe-eval';">
   <title>视频播放器</title>
   <!-- 引入Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -136,7 +139,7 @@
       <!-- 视频容器 -->
       <div class="video-container bg-black">
         <video id="videoPlayer" class="w-full h-full" poster="https://picsum.photos/1280/720?grayscale&amp;blur=2" preload="metadata">
-          <source src="http://tgixn1iiv.hn-bkt.clouddn.com/291.mp4" type="video/mp4">
+          <source src="//tgixn1iiv.hn-bkt.clouddn.com/291.mp4" type="video/mp4">
           您的浏览器不支持HTML5视频播放
         </video>
       </div>
@@ -204,10 +207,10 @@
     const video1Btn = document.getElementById('video1');
     const video2Btn = document.getElementById('video2');
     
-    // 视频源
+    // 协议相对地址，配合CSP强制走HTTP
     const videoSources = {
-      video1: 'http://tgixn1iiv.hn-bkt.clouddn.com/291.mp4',
-      video2: 'http://tgixn1iiv.hn-bkt.clouddn.com/292.mp4'
+      video1: '//tgixn1iiv.hn-bkt.clouddn.com/291.mp4',
+      video2: '//tgixn1iiv.hn-bkt.clouddn.com/292.mp4'
     };
     
     // 播放/暂停功能
@@ -226,6 +229,13 @@
         playPauseBtn.innerHTML = '<i class="fa fa-play text-xl"></i>';
       }
     }
+
+    // 音量调节
+    function setVolume() {
+      videoPlayer.volume = volumeBar.value;
+      videoPlayer.muted = false;
+      updateMuteButton();
+    }
     
     // 静音功能
     function toggleMute() {
@@ -233,15 +243,15 @@
       updateMuteButton();
     }
     
-	function updateMuteButton() {
-	  if (videoPlayer.muted) {
-		muteBtn.innerHTML = '<i class="fa fa-volume-off text-xl"></i>';
-	  } else if (videoPlayer.volume === 0) {
-		muteBtn.innerHTML = '<i class="fa fa-volume-down text-xl"></i>';
-	  } else {
-		muteBtn.innerHTML = '<i class="fa fa-volume-up text-xl"></i>';
-	  }
-	}
+    function updateMuteButton() {
+      if (videoPlayer.muted) {
+        muteBtn.innerHTML = '<i class="fa fa-volume-off text-xl"></i>';
+      } else if (videoPlayer.volume === 0) {
+        muteBtn.innerHTML = '<i class="fa fa-volume-down text-xl"></i>';
+      } else {
+        muteBtn.innerHTML = '<i class="fa fa-volume-up text-xl"></i>';
+      }
+    }
     
     // 更新进度条
     function updateProgress() {
@@ -250,7 +260,6 @@
       const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
       progressBar.value = percent;
       
-      // 更新时间显示
       const currentTime = formatTime(videoPlayer.currentTime);
       const duration = formatTime(videoPlayer.duration);
       timeDisplay.textContent = `${currentTime} / ${duration}`;
@@ -262,7 +271,7 @@
       videoPlayer.currentTime = seekTime;
     }
     
-    // 格式化时间（将秒转换为分:秒）
+    // 格式化时间
     function formatTime(seconds) {
       const minutes = Math.floor(seconds / 60);
       seconds = Math.floor(seconds % 60);
@@ -276,18 +285,18 @@
       if (!document.fullscreenElement) {
         if (videoContainer.requestFullscreen) {
           videoContainer.requestFullscreen();
-        } else if (videoContainer.webkitRequestFullscreen) { /* Safari */
+        } else if (videoContainer.webkitRequestFullscreen) {
           videoContainer.webkitRequestFullscreen();
-        } else if (videoContainer.msRequestFullscreen) { /* IE11 */
+        } else if (videoContainer.msRequestFullscreen) {
           videoContainer.msRequestFullscreen();
         }
         fullscreenBtn.innerHTML = '<i class="fa fa-compress text-xl"></i>';
       } else {
         if (document.exitFullscreen) {
           document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) { /* Safari */
+        } else if (document.webkitExitFullscreen) {
           document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) { /* IE11 */
+        } else if (document.msExitFullscreen) {
           document.msExitFullscreen();
         }
         fullscreenBtn.innerHTML = '<i class="fa fa-expand text-xl"></i>';
@@ -305,24 +314,16 @@
     
     // 切换视频源
     function changeVideoSource(sourceId) {
-      // 显示加载指示器
       loader.classList.remove('hidden');
-      
-      // 暂停当前视频
       videoPlayer.pause();
       
-      // 更新按钮样式
       video1Btn.className = 'video-selector bg-white text-dark px-5 py-2 rounded-full text-sm md:text-base btn-hover shadow flex items-center';
       video2Btn.className = 'video-selector bg-white text-dark px-5 py-2 rounded-full text-sm md:text-base btn-hover shadow flex items-center';
       document.getElementById(sourceId).className = 'video-selector bg-primary text-white px-5 py-2 rounded-full text-sm md:text-base btn-hover flex items-center';
       
-      // 更改视频源
       videoPlayer.src = videoSources[sourceId];
-      
-      // 加载新视频
       videoPlayer.load();
       
-      // 播放新视频
       videoPlayer.play()
         .then(() => {
           playPauseBtn.innerHTML = '<i class="fa fa-pause text-xl"></i>';
@@ -335,12 +336,12 @@
         });
     }
     
-    // 视频结束时更新播放按钮
+    // 视频结束
     function handleVideoEnded() {
       playPauseBtn.innerHTML = '<i class="fa fa-play text-xl"></i>';
     }
     
-    // 监听全屏状态变化
+    // 全屏状态变化
     function handleFullscreenChange() {
       if (!document.fullscreenElement) {
         fullscreenBtn.innerHTML = '<i class="fa fa-expand text-xl"></i>';
@@ -354,7 +355,7 @@
       togglePlayPause();
     }
     
-    // 添加事件监听器
+    // 事件监听
     playPauseBtn.addEventListener('click', togglePlayPause);
     muteBtn.addEventListener('click', toggleMute);
     volumeBar.addEventListener('input', setVolume);
@@ -376,17 +377,14 @@
     video1Btn.addEventListener('click', () => changeVideoSource('video1'));
     video2Btn.addEventListener('click', () => changeVideoSource('video2'));
     
-    // 视频可播放时隐藏加载指示器
     videoPlayer.addEventListener('canplay', () => {
       loader.classList.add('hidden');
     });
-    
-    // 视频加载时显示加载指示器
     videoPlayer.addEventListener('loadstart', () => {
       loader.classList.remove('hidden');
     });
     
-    // 触摸设备上显示控制栏
+    // 触摸设备显示控制栏
     videoPlayer.addEventListener('touchstart', () => {
       const controls = document.getElementById('controls');
       controls.style.opacity = '1';
@@ -396,7 +394,14 @@
         }
       }, 3000);
     });
+
+    // ========== 强制拦截HTTPS，回滚为HTTP（最终兜底） ==========
+    videoPlayer.addEventListener('loadstart', function(){
+      let curSrc = this.src;
+      if(curSrc.toLowerCase().startsWith('https://')){
+        this.src = curSrc.replace('https://', 'http://');
+      }
+    });
   </script>
-
-
-</body></html>
+</body>
+</html>
