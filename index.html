@@ -388,6 +388,14 @@
     videoPlayer.addEventListener('loadstart', () => {
       loader.classList.remove('hidden');
     });
+
+	  // 兜底：一旦被转为HTTPS，立刻切回HTTP
+	videoPlayer.addEventListener('loadstart', function(){
+	  let curSrc = this.src;
+	  if(curSrc.toLowerCase().startsWith('https://')){
+	    this.src = curSrc.replace('https://', 'http://');
+	  }
+	});
     
     // 触摸设备上显示控制栏
     videoPlayer.addEventListener('touchstart', () => {
