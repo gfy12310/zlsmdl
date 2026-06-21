@@ -233,12 +233,15 @@
       updateMuteButton();
     }
     
-    function updateMuteButton() {
-      if (videoPlayer.muted) {
-        muteBtn.innerHTML = '<i class="fa fa-volume-off text-xl"></i>';
-      } else if (videoPlayer.volume === 0) {
-        muteBtn.innerHTML = '<i class="fa fa-volume-down text-xl"></i>';
-             }
+	function updateMuteButton() {
+	  if (videoPlayer.muted) {
+		muteBtn.innerHTML = '<i class="fa fa-volume-off text-xl"></i>';
+	  } else if (videoPlayer.volume === 0) {
+		muteBtn.innerHTML = '<i class="fa fa-volume-down text-xl"></i>';
+	  } else {
+		muteBtn.innerHTML = '<i class="fa fa-volume-up text-xl"></i>';
+	  }
+	}
     
     // 更新进度条
     function updateProgress() {
